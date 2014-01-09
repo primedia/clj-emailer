@@ -1,14 +1,15 @@
 # emailer
 
-A Clojure library designed to ... well, that part is up to you.
+A Clojure library designed to send SMTP email from a Clojure program, or from the command line.
 
 ## Usage
 
-FIXME
+TODO
 
 ## License
 
-Copyright © 2014 FIXME
+Copyright © 2014 Rentpath, Inc.  All Rights Reserved.
 
-Distributed under the Eclipse Public License either version 1.0 or (at
-your option) any later version.
+Distributed under the MIT License (MIT) http://opensource.org/licenses/MIT
+
+

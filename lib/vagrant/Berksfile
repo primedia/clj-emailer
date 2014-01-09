@@ -1,0 +1,24 @@
+if RUBY_VERSION =~ /1.9/
+  Encoding.default_external = Encoding::UTF_8
+  Encoding.default_internal = Encoding::UTF_8
+end
+
+site :opscode
+
+cookbook 'build-essential'
+cookbook 'git'
+cookbook 'emacs'
+cookbook 'vim'
+cookbook 'man'
+cookbook 'nginx'
+cookbook 'java'
+cookbook 'jruby'
+cookbook 'jboss'
+cookbook 'jenkins'
+cookbook 'rvm', github: 'fnichol/chef-rvm'
+cookbook 'riak'
+cookbook 'leiningen'
+cookbook 'vnc'
+cookbook 'mercurial'
+cookbook 'ack-cookbook', github: 'cap10morgan/ack-cookbook'
+cookbook 'tree'
