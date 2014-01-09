@@ -1,15 +1,14 @@
 (ns ^{:author "Jack Morrill"
       :doc "Send email"}
   com.rentpath.emailer.core
-  (:require [clojure.java.io :as io]
-            [clojure.string  :as string]
+  (:require [clojure.java.io :as  io]
+            [clojure.string  :as str]
             [clojure.tools.cli :refer [cli]]
-            [com.rentpath.environs.core :as environs :refer :all]
-            [postal.core :as postal :only (send-message)]
-            [com.rentpath.dotenv.core :as dotenv :refer :all])
+            [postal.core :refer [send-message]]
+            [com.rentpath.environs.core :refer [env]]
+            [com.rentpath.dotenv.core :refer [dotenv!]])
   (:gen-class :main true))
 
-(dotenv!)
 
 (defn- parse-args
   [args]
@@ -26,49 +25,34 @@
       :parse-fn #(Integer/parseInt %)
       :validate [#(< 0 % 0x10000) "Must be a number between 0 and 65536"]]
     ["-s" "--subject SUBJECT" "Subject:"]
+    ["-S" "--ssl SSL" "If present, use SSL" :default false :flag true]
     ["-t" "--to TO" "To:"]
     ["-u" "--username USER" "SMTP username"]
     ["-?" "--help" "Show this help" :default false :flag true]))
 
-(def mail-args
-  { :host     (Env "EMAILER_SMTP_HOST")
-    :user     (Env "EMAILER_SMTP_USER")
-    :pass     (Env "EMAILER_SMTP_PASS")
-    :ssl      :yes
-    :from     (Env "EMAILER_FROM")
-    :to       (Env "EMAILER_TO")
-    :subject  (Env "EMAILER_SUBJECT" :allow-nil true)
-    :body     [{:type "text/plain"
-                :content (str (Env "EMAILER_BODY" :allow-nil true))}
-               {:type :attachment
-                :content (java.io.File. (Env "EMAILER_ATTACHMENT" :allow-nil true))}]})
 
-;;(defn send!
-;;  "Send an email via SMTP"
-;;  [& args]
-;;  (postal/send-message args))
-
-(defn send!
-  "Send an email via SMTP"
-  [& args]
-  (postal/send-message
-    ^{:host     (Env "EMAILER_SMTP_HOST")
-      :user     (Env "EMAILER_SMTP_USER")
-      :pass     (Env "EMAILER_SMTP_PASS")
-      :ssl      (Env "EMAILER_SMTP_SSL")}
-     {:from     (Env "EMAILER_FROM")
-      :to       (Env "EMAILER_TO")
-      :subject  (Env "EMAILER_SUBJECT"    :allow-nil true)
-      :body     [{:type "text/plain"
-                  :content (str (Env "EMAILER_BODY" :allow-nil true))}
-                 {:type :attachment
-                  :content (java.io.File. (Env "EMAILER_ATTACHMENT" :allow-nil true))}]}))
 (defn -main
   "Stand-alone emailer
    Usage: [env ENVIRONMENT=environment] java -jar emailer-0.1.0-standalone.jar [options]"
   [& args]
-  (let [[options args banner] (parse-args args) {:keys [cc body from password port smtphost subject to username]} options]
-    (parse-args args)
+  (dotenv!)
+  (let [[options args banner] (parse-args args)
+        {:keys [subject body
+                from to cc
+                username password
+                smtphost port ssl]} options]
     (if (:help options)
       (println banner)
-      (send! mail-args))))
+      (send-message ^{:host (or smtphost (env "EMAILER_SMTP_HOST"))
+                      :user (or username (env "EMAILER_SMTP_USER"))
+                      :pass (or password (env "EMAILER_SMTP_PASS"))
+                      :ssl  (or ssl      (env "EMAILER_SMTP_SSL"))}
+
+                    {:from  (or from     (env "EMAILER_FROM"))
+                     :to    (or to       (env "EMAILER_TO"))
+                     :body  (or body [{:type "text/plain"
+                                       :content (or (env "EMAILER_BODY" :allow-nil true) "")}
+                                      {:type :attachment
+                                       :content (io/file (env "EMAILER_ATTACHMENT" :allow-nil true))}])
+                     :subject (or subject (env "EMAILER_SUBJECT"))}))))
+

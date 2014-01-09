@@ -6,7 +6,7 @@
   :dependencies [[org.clojure/clojure   "1.5.1"]
                  [org.clojure/tools.cli "0.2.4"]
                  [com.rentpath/dotenv   "1.0.2"]
-                 [com.rentpath/environs "1.0.1"]
+                 [com.rentpath/environs "1.1.0"]
                  [me.raynes/fs          "1.4.0"]
                  [com.draines/postal    "1.11.1"]]
   :main com.rentpath.emailer.core
