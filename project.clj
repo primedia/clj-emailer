@@ -1,4 +1,4 @@
-(defproject emailer "0.1.0"
+(defproject emailer "0.1.1"
   :description "Send an email message"
   :url "https://github.com/primedia/clj-emailer"
   :license {:name "MIT License (MIT)"
