@@ -13,21 +13,21 @@
 (defn- parse-args
   [args]
   (cli args
-    ["-a" "--attachment FILE" "Attachment file"]
-    ["-b" "--body BODY" "Message body"]
-    ["-c" "--cc CC" "CC:"]
-    ["-f" "--from FROM" "From:"]
-    ["-H" "--smtphost HOST" "SMTP host"
+    ["-a" "--attachment" "Attachment file"]
+    ["-b" "--body" "Message body"]
+    ["-c" "--cc" "CC:"]
+    ["-f" "--from" "From:"]
+    ["-H" "--smtphost" "SMTP host"
       :default "smtp.gmail.com"]
-    ["-p" "--password PASSWORD" "SMTP password"]
-    ["-P" "--port PORT" "SMTP Port number"
+    ["-p" "--password" "SMTP password"]
+    ["-P" "--port" "SMTP Port number"
       :default 465
       :parse-fn #(Integer/parseInt %)
       :validate [#(< 0 % 0x10000) "Must be a number between 0 and 65536"]]
-    ["-s" "--subject SUBJECT" "Subject:"]
-    ["-S" "--ssl SSL" "If present, use SSL" :default false :flag true]
-    ["-t" "--to TO" "To:"]
-    ["-u" "--username USER" "SMTP username"]
+    ["-s" "--subject" "Subject:"]
+    ["-S" "--ssl" "If present, use SSL" :default false :flag true]
+    ["-t" "--to" "To:"]
+    ["-u" "--username" "SMTP username"]
     ["-?" "--help" "Show this help" :default false :flag true]))
 
 
