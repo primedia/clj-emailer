@@ -46,7 +46,7 @@
       (send-message ^{:host (or smtphost (env "EMAILER_SMTP_HOST"))
                       :user (or username (env "EMAILER_SMTP_USER"))
                       :pass (or password (env "EMAILER_SMTP_PASS"))
-                      :ssl  (or ssl      (env "EMAILER_SMTP_SSL"))}
+                      :ssl  (or ssl      (env "EMAILER_SMTP_SSL" :allow-nil true) false)}
 
                     {:from  (or from     (env "EMAILER_FROM"))
                      :to    (or to       (env "EMAILER_TO"))
